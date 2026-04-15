@@ -216,6 +216,8 @@ sealed class StoreIdentifiers {
   static StoreIdentifiers fromPigeon(PStoreIdentifiers ids) {
     if (ids is PStripeStoreIdentifiers) {
       return StripeStoreIdentifiers.fromPigeon(ids);
+    } else if (ids is PPaddleStoreIdentifiers) {
+      return PaddleStoreIdentifiers.fromPigeon(ids);
     } else if (ids is PUnknownStoreIdentifiers) {
       return UnknownStoreIdentifiers.fromPigeon(ids);
     }
@@ -235,6 +237,22 @@ class StripeStoreIdentifiers extends StoreIdentifiers {
 
   static StripeStoreIdentifiers fromPigeon(PStripeStoreIdentifiers ids) {
     return StripeStoreIdentifiers(
+        customerId: ids.customerId, subscriptionIds: ids.subscriptionIds);
+  }
+}
+
+/// Paddle purchase store identifiers.
+class PaddleStoreIdentifiers extends StoreIdentifiers {
+  final String customerId;
+  final List<String> subscriptionIds;
+
+  const PaddleStoreIdentifiers({
+    required this.customerId,
+    required this.subscriptionIds,
+  });
+
+  static PaddleStoreIdentifiers fromPigeon(PPaddleStoreIdentifiers ids) {
+    return PaddleStoreIdentifiers(
         customerId: ids.customerId, subscriptionIds: ids.subscriptionIds);
   }
 }
