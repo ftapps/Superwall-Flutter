@@ -1962,7 +1962,13 @@ data class PPaywallOptions (
   val transactionBackgroundView: PTransactionBackgroundView? = null,
   val overrideProductsByName: Map<String, String>? = null,
   val shouldShowWebPurchaseConfirmationAlert: Boolean? = null,
-  val onBackPressedHost: POnBackPressedHost? = null
+  val onBackPressedHost: POnBackPressedHost? = null,
+  /**
+   * Android only. Per-device-tier overrides for [shouldPreload].
+   * Keys are raw `DeviceTier` values (e.g. `ultra_low`, `low`, `mid`,
+   * `high`, `ultra_high`, `unknown`).
+   */
+  val preloadDeviceOverrides: Map<String, Boolean>? = null
 )
  {
   companion object {
@@ -1977,7 +1983,8 @@ data class PPaywallOptions (
       val overrideProductsByName = pigeonVar_list[7] as Map<String, String>?
       val shouldShowWebPurchaseConfirmationAlert = pigeonVar_list[8] as Boolean?
       val onBackPressedHost = pigeonVar_list[9] as POnBackPressedHost?
-      return PPaywallOptions(isHapticFeedbackEnabled, restoreFailed, shouldShowPurchaseFailureAlert, shouldPreload, automaticallyDismiss, shouldShowWebRestorationAlert, transactionBackgroundView, overrideProductsByName, shouldShowWebPurchaseConfirmationAlert, onBackPressedHost)
+      val preloadDeviceOverrides = pigeonVar_list[10] as Map<String, Boolean>?
+      return PPaywallOptions(isHapticFeedbackEnabled, restoreFailed, shouldShowPurchaseFailureAlert, shouldPreload, automaticallyDismiss, shouldShowWebRestorationAlert, transactionBackgroundView, overrideProductsByName, shouldShowWebPurchaseConfirmationAlert, onBackPressedHost, preloadDeviceOverrides)
     }
   }
   fun toList(): List<Any?> {
@@ -1992,6 +1999,7 @@ data class PPaywallOptions (
       overrideProductsByName,
       shouldShowWebPurchaseConfirmationAlert,
       onBackPressedHost,
+      preloadDeviceOverrides,
     )
   }
   override fun equals(other: Any?): Boolean {

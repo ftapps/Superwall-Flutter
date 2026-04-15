@@ -1890,6 +1890,10 @@ struct PPaywallOptions: Hashable {
   var overrideProductsByName: [String: String]? = nil
   var shouldShowWebPurchaseConfirmationAlert: Bool? = nil
   var onBackPressedHost: POnBackPressedHost? = nil
+  /// Android only. Per-device-tier overrides for [shouldPreload].
+  /// Keys are raw `DeviceTier` values (e.g. `ultra_low`, `low`, `mid`,
+  /// `high`, `ultra_high`, `unknown`).
+  var preloadDeviceOverrides: [String: Bool]? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
@@ -1904,6 +1908,7 @@ struct PPaywallOptions: Hashable {
     let overrideProductsByName: [String: String]? = nilOrValue(pigeonVar_list[7])
     let shouldShowWebPurchaseConfirmationAlert: Bool? = nilOrValue(pigeonVar_list[8])
     let onBackPressedHost: POnBackPressedHost? = nilOrValue(pigeonVar_list[9])
+    let preloadDeviceOverrides: [String: Bool]? = nilOrValue(pigeonVar_list[10])
 
     return PPaywallOptions(
       isHapticFeedbackEnabled: isHapticFeedbackEnabled,
@@ -1915,7 +1920,8 @@ struct PPaywallOptions: Hashable {
       transactionBackgroundView: transactionBackgroundView,
       overrideProductsByName: overrideProductsByName,
       shouldShowWebPurchaseConfirmationAlert: shouldShowWebPurchaseConfirmationAlert,
-      onBackPressedHost: onBackPressedHost
+      onBackPressedHost: onBackPressedHost,
+      preloadDeviceOverrides: preloadDeviceOverrides
     )
   }
   func toList() -> [Any?] {
@@ -1930,6 +1936,7 @@ struct PPaywallOptions: Hashable {
       overrideProductsByName,
       shouldShowWebPurchaseConfirmationAlert,
       onBackPressedHost,
+      preloadDeviceOverrides,
     ]
   }
   static func == (lhs: PPaywallOptions, rhs: PPaywallOptions) -> Bool {

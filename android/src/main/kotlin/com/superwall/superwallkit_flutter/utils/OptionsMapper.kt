@@ -12,6 +12,7 @@ import PSuperwallOptions
 import PSurvey
 import PSurveyOption
 import PVariant
+import com.superwall.sdk.analytics.Tier
 import com.superwall.sdk.billing.DecomposedProductIds
 import com.superwall.sdk.config.options.PaywallOptions
 import PTestModeBehavior
@@ -129,6 +130,13 @@ fun PPaywallOptions.toSdkPaywallOptions(): PaywallOptions {
         sdkPaywallOptions.shouldShowPurchaseFailureAlert = it
     }
     this.shouldPreload?.let { sdkPaywallOptions.shouldPreload = it }
+    this.preloadDeviceOverrides?.let { overrides ->
+        sdkPaywallOptions.preloadDeviceOverrides = overrides
+            .mapNotNull { (raw, value) ->
+                Tier.values().firstOrNull { it.raw == raw }?.let { it to value }
+            }
+            .toMap()
+    }
     this.automaticallyDismiss?.let { sdkPaywallOptions.automaticallyDismiss = it }
 
     this.restoreFailed?.let { hostRestoreFailed ->

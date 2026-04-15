@@ -2,10 +2,19 @@
 
 The changelog for `Superwall`. Also see the [releases](https://github.com/superwall/Superwall-Flutter/releases) on GitHub.
 
+## 2.4.12
+
+### Enhancements
+- Updates Android SDK to 2.7.8 [View Android SDK release notes](https://github.com/superwall/Superwall-Android/releases/tag/2.7.11).
+- Updates iOS SDK to 4.14.2 [View iOS SDK release notes](https://github.com/superwall/Superwall-iOS/releases/tag/4.14.2).
+- Adds `preloadDeviceOverrides` option to `PaywallOptions` to override `shouldPreload` per device tier (Android only)
+- Exports `PresentationResult`, `StoreTransaction`, `TransactionProduct` from the public package
+- Fixes `PurchaserInfo.storeIdentifiers` leaking the internal Pigeon type instead of the public `StoreIdentifiers` sealed class
+
 ## 2.4.11
 
 ### Enhancements
-- Updates iOS SDK to 4.14.1 [View iOS SDK release notes](https://github.com/superwall/Superwall-iOS/releases/tag/4.14.1).
+- Updates iOS SDK to 4.14.2 [View iOS SDK release notes](https://github.com/superwall/Superwall-iOS/releases/tag/4.14.2).
 - Updates Android SDK to 2.7.8 [View Android SDK release notes](https://github.com/superwall/Superwall-Android/releases/tag/2.7.8).
 - Adds `appstackId` integration attribute for Appstack integration support
 - Adds `testModeBehavior` option to `SuperwallOptions` to control when the SDK enters test mode (automatic, whenEnabledForUser, never, always)
