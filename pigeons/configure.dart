@@ -646,6 +646,11 @@ class PPaywallOptions {
   Map<String, String>? overrideProductsByName;
   bool? shouldShowWebPurchaseConfirmationAlert;
   POnBackPressedHost? onBackPressedHost;
+
+  /// Android only. Per-device-tier overrides for [shouldPreload].
+  /// Keys are raw `DeviceTier` values (e.g. `ultra_low`, `low`, `mid`,
+  /// `high`, `ultra_high`, `unknown`).
+  Map<String, bool>? preloadDeviceOverrides;
 }
 
 class POnBackPressedHost {
