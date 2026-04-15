@@ -18,6 +18,15 @@ class PaywallOptions {
   /// Defaults to `true`.
   bool shouldPreload = true;
 
+  /// Per-device-tier overrides for [shouldPreload]. Only the tiers you specify
+  /// are overridden; the rest fall back to [shouldPreload].
+  ///
+  /// Use this to disable preloading on low-end devices while keeping it
+  /// enabled on mid/high-end devices, for example.
+  ///
+  /// Note: Android only. Has no effect on iOS.
+  Map<DeviceTier, bool> preloadDeviceOverrides = const {};
+
   /// Automatically dismisses the paywall when a product is purchased or
   /// restored. Defaults to `true`.
   bool automaticallyDismiss = true;
@@ -53,6 +62,8 @@ extension PaywallOptionsJson on PaywallOptions {
       'restoreFailed': restoreFailed.toJson(),
       'shouldShowPurchaseFailureAlert': shouldShowPurchaseFailureAlert,
       'shouldPreload': shouldPreload,
+      'preloadDeviceOverrides': preloadDeviceOverrides
+          .map((tier, value) => MapEntry(tier.toJson(), value)),
       'automaticallyDismiss': automaticallyDismiss,
       'transactionBackgroundView': transactionBackgroundView.toJson(),
       'shouldShowWebRestorationAlert': shouldShowWebRestorationAlert,
@@ -84,6 +95,49 @@ extension RestoreFailedJson on RestoreFailed {
       'message': message,
       'closeButtonTitle': closeButtonTitle,
     };
+  }
+}
+
+/// Device tier classification used by [PaywallOptions.preloadDeviceOverrides].
+///
+/// Tiers are evaluated from device specs (RAM, CPU, codec support).
+/// Android only.
+enum DeviceTier {
+  /// ≤2GB RAM, ~1.2GHz quad-core, missing modern codecs (e.g. Android Go).
+  ultraLow,
+
+  /// 3–4GB RAM, ~1.8GHz 4–8 cores, partial codec support (entry-level).
+  low,
+
+  /// 4–6GB RAM, ~2.0–2.4GHz 8 cores, full codec support.
+  mid,
+
+  /// 6–8GB RAM, ~2.4–2.8GHz 8 cores, high-density display.
+  high,
+
+  /// ≥10GB RAM, 2.8+GHz with prime cores ≥3.5GHz.
+  ultraHigh,
+
+  /// Device info could not be evaluated.
+  unknown,
+}
+
+extension DeviceTierJson on DeviceTier {
+  String toJson() {
+    switch (this) {
+      case DeviceTier.ultraLow:
+        return 'ultra_low';
+      case DeviceTier.low:
+        return 'low';
+      case DeviceTier.mid:
+        return 'mid';
+      case DeviceTier.high:
+        return 'high';
+      case DeviceTier.ultraHigh:
+        return 'ultra_high';
+      case DeviceTier.unknown:
+        return 'unknown';
+    }
   }
 }
 

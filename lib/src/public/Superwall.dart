@@ -111,6 +111,8 @@ class Superwall {
     generatedOptions.shouldShowPurchaseFailureAlert =
         options.shouldShowPurchaseFailureAlert;
     generatedOptions.shouldPreload = options.shouldPreload;
+    generatedOptions.preloadDeviceOverrides = options.preloadDeviceOverrides
+        .map((tier, value) => MapEntry(tier.toJson(), value));
     generatedOptions.automaticallyDismiss = options.automaticallyDismiss;
     generatedOptions.shouldShowWebRestorationAlert =
         options.shouldShowWebRestorationAlert;

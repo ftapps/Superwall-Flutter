@@ -2465,6 +2465,7 @@ class PPaywallOptions {
     this.overrideProductsByName,
     this.shouldShowWebPurchaseConfirmationAlert,
     this.onBackPressedHost,
+    this.preloadDeviceOverrides,
   });
 
   bool? isHapticFeedbackEnabled;
@@ -2487,6 +2488,11 @@ class PPaywallOptions {
 
   POnBackPressedHost? onBackPressedHost;
 
+  /// Android only. Per-device-tier overrides for [shouldPreload].
+  /// Keys are raw `DeviceTier` values (e.g. `ultra_low`, `low`, `mid`,
+  /// `high`, `ultra_high`, `unknown`).
+  Map<String, bool>? preloadDeviceOverrides;
+
   List<Object?> _toList() {
     return <Object?>[
       isHapticFeedbackEnabled,
@@ -2499,6 +2505,7 @@ class PPaywallOptions {
       overrideProductsByName,
       shouldShowWebPurchaseConfirmationAlert,
       onBackPressedHost,
+      preloadDeviceOverrides,
     ];
   }
 
@@ -2518,6 +2525,7 @@ class PPaywallOptions {
       overrideProductsByName: (result[7] as Map<Object?, Object?>?)?.cast<String, String>(),
       shouldShowWebPurchaseConfirmationAlert: result[8] as bool?,
       onBackPressedHost: result[9] as POnBackPressedHost?,
+      preloadDeviceOverrides: (result[10] as Map<Object?, Object?>?)?.cast<String, bool>(),
     );
   }
 

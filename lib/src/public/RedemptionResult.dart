@@ -193,7 +193,7 @@ class PurchaserInfo {
   final String? email;
 
   /// The identifiers of the store that was purchased from.
-  final PStoreIdentifiers storeIdentifiers;
+  final StoreIdentifiers storeIdentifiers;
 
   PurchaserInfo({
     required this.appUserId,
@@ -205,13 +205,24 @@ class PurchaserInfo {
     return PurchaserInfo(
         appUserId: info.appUserId,
         email: info.email,
-        storeIdentifiers: info.storeIdentifiers);
+        storeIdentifiers: StoreIdentifiers.fromPigeon(info.storeIdentifiers));
   }
 }
 
 /// Identifiers of the store that was purchased from.
 sealed class StoreIdentifiers {
   const StoreIdentifiers();
+
+  static StoreIdentifiers fromPigeon(PStoreIdentifiers ids) {
+    if (ids is PStripeStoreIdentifiers) {
+      return StripeStoreIdentifiers.fromPigeon(ids);
+    } else if (ids is PPaddleStoreIdentifiers) {
+      return PaddleStoreIdentifiers.fromPigeon(ids);
+    } else if (ids is PUnknownStoreIdentifiers) {
+      return UnknownStoreIdentifiers.fromPigeon(ids);
+    }
+    throw ArgumentError('Unknown PStoreIdentifiers type: ${ids.runtimeType}');
+  }
 }
 
 /// Stripe purchase store identifiers.
@@ -226,6 +237,22 @@ class StripeStoreIdentifiers extends StoreIdentifiers {
 
   static StripeStoreIdentifiers fromPigeon(PStripeStoreIdentifiers ids) {
     return StripeStoreIdentifiers(
+        customerId: ids.customerId, subscriptionIds: ids.subscriptionIds);
+  }
+}
+
+/// Paddle purchase store identifiers.
+class PaddleStoreIdentifiers extends StoreIdentifiers {
+  final String customerId;
+  final List<String> subscriptionIds;
+
+  const PaddleStoreIdentifiers({
+    required this.customerId,
+    required this.subscriptionIds,
+  });
+
+  static PaddleStoreIdentifiers fromPigeon(PPaddleStoreIdentifiers ids) {
+    return PaddleStoreIdentifiers(
         customerId: ids.customerId, subscriptionIds: ids.subscriptionIds);
   }
 }
