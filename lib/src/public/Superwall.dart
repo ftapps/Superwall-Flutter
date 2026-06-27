@@ -491,6 +491,15 @@ class Superwall {
         feature: feature != null ? featureBlockHost : null);
   }
 
+  /// Tracks an analytics event with the given name and optional [params].
+  ///
+  /// This is a thin, fire-and-forget alias for [registerPlacement] with no
+  /// paywall presentation handler or feature block. Use it to send arbitrary
+  /// analytics events, which are queryable via Superwall's Query API.
+  Future<void> track(String placement, {Map<String, Object>? params}) async {
+    await registerPlacement(placement, params: params);
+  }
+
   Future<RestorationResult> restorePurchases() async {
     final result = await hostApi.restorePurchases();
     return RestorationResult.fromPRestorationResult(result);
