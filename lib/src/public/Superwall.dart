@@ -81,11 +81,14 @@ class Superwall {
 
     // Copy primitive values
     generatedOptions.isExternalDataCollectionEnabled =
-        options.isExternalDataCollectionEnabled;
+        options.eventTrackingBehavior == EventTrackingBehavior.all;
     generatedOptions.localeIdentifier = options.localeIdentifier;
     generatedOptions.isGameControllerEnabled = options.isGameControllerEnabled;
     generatedOptions.passIdentifiersToPlayStore =
         options.passIdentifiersToPlayStore;
+
+    generatedOptions.eventTrackingBehavior =
+        _convertEventTrackingBehavior(options.eventTrackingBehavior);
 
     generatedOptions.testModeBehavior =
         _convertTestModeBehavior(options.testModeBehavior);
@@ -119,6 +122,7 @@ class Superwall {
     generatedOptions.overrideProductsByName = options.overrideProductsByName;
     generatedOptions.shouldShowWebPurchaseConfirmationAlert =
         options.shouldShowWebPurchaseConfirmationAlert;
+    generatedOptions.loadingColor = options.loadingColor;
 
     generatedOptions.restoreFailed = generated.PRestoreFailed()
       ..title = options.restoreFailed.title
@@ -157,6 +161,19 @@ class Superwall {
         return generated.PNetworkEnvironment.releaseCandidate;
       case NetworkEnvironment.developer:
         return generated.PNetworkEnvironment.developer;
+    }
+  }
+
+  // Helper method to convert EventTrackingBehavior
+  static generated.PEventTrackingBehavior _convertEventTrackingBehavior(
+      EventTrackingBehavior behavior) {
+    switch (behavior) {
+      case EventTrackingBehavior.all:
+        return generated.PEventTrackingBehavior.all;
+      case EventTrackingBehavior.superwallOnly:
+        return generated.PEventTrackingBehavior.superwallOnly;
+      case EventTrackingBehavior.none:
+        return generated.PEventTrackingBehavior.none;
     }
   }
 
@@ -359,6 +376,15 @@ class Superwall {
   // Sets the locale identifier
   Future<void> setLocaleIdentifier(String? localeIdentifier) async {
     await hostApi.setLocaleIdentifier(localeIdentifier);
+  }
+
+  /// The country code of the user's store account (e.g. the Play Store account
+  /// on Android). Returns `null` until it has been loaded, if the store is
+  /// unavailable, or on platforms that don't provide it.
+  ///
+  /// Note: Currently populated on Android only. Returns `null` on iOS.
+  Future<String?> getStoreFrontCountryCode() async {
+    return await hostApi.getStoreFrontCountryCode();
   }
 
   // Gets the current user's ID

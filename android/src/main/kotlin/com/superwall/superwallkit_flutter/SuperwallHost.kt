@@ -203,6 +203,13 @@ class SuperwallHost(
         Superwall.instance.localeIdentifier = localeIdentifier
     }
 
+    override fun getStoreFrontCountryCode(callback: (Result<String?>) -> Unit) {
+        // The Play Store storefront country code is not exposed on the public
+        // `Superwall` API (it lives on the internal StoreManager), so this
+        // returns null until the SDK exposes a public accessor.
+        callback(Result.success(null))
+    }
+
     override fun getUserId(): String {
         return Superwall.instance.userId
     }
@@ -452,6 +459,7 @@ class SuperwallHost(
 fun PIntegrationAttribute.toAttributeKey(): String {
     return when (this) {
         PIntegrationAttribute.ADJUST_ID -> "\$adjust_id"
+        PIntegrationAttribute.SINGULAR_DEVICE_ID -> "\$singular_device_id"
         PIntegrationAttribute.AMPLITUDE_DEVICE_ID -> "\$amplitude_device_id"
         PIntegrationAttribute.AMPLITUDE_USER_ID -> "\$amplitude_user_id"
         PIntegrationAttribute.APPSFLYER_ID -> "\$appsflyer_id"

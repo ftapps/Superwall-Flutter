@@ -149,6 +149,12 @@ final class SuperwallHost : NSObject, PSuperwallHostApi {
     Superwall.shared.localeIdentifier = localeIdentifier
   }
 
+  func getStoreFrontCountryCode(completion: @escaping (Result<String?, any Error>) -> Void) {
+    // SuperwallKit does not currently expose a storefront country code on the
+    // public `Superwall` API, so this returns nil on iOS.
+    completion(.success(nil))
+  }
+
   func getUserId() -> String {
     return Superwall.shared.userId
   }
@@ -447,6 +453,8 @@ extension PIntegrationAttribute {
     switch self {
     case .adjustId:
       return .adjustId
+    case .singularDeviceId:
+      return .singularDeviceId
     case .amplitudeDeviceId:
       return .amplitudeDeviceId
     case .amplitudeUserId:
