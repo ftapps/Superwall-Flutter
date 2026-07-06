@@ -4010,7 +4010,6 @@ protocol PSuperwallHostApi {
   func consume(purchaseToken: String, completion: @escaping (Result<String, Error>) -> Void)
   func getLocaleIdentifier() throws -> String?
   func setLocaleIdentifier(localeIdentifier: String?) throws
-  func getStoreFrontCountryCode(completion: @escaping (Result<String?, Error>) -> Void)
   func getUserId() throws -> String
   func getIsLoggedIn() throws -> Bool
   func getIsInitialized() throws -> Bool
@@ -4265,21 +4264,6 @@ class PSuperwallHostApiSetup {
       }
     } else {
       setLocaleIdentifierChannel.setMessageHandler(nil)
-    }
-    let getStoreFrontCountryCodeChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.superwallkit_flutter.PSuperwallHostApi.getStoreFrontCountryCode\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
-    if let api = api {
-      getStoreFrontCountryCodeChannel.setMessageHandler { _, reply in
-        api.getStoreFrontCountryCode { result in
-          switch result {
-          case .success(let res):
-            reply(wrapResult(res))
-          case .failure(let error):
-            reply(wrapError(error))
-          }
-        }
-      }
-    } else {
-      getStoreFrontCountryCodeChannel.setMessageHandler(nil)
     }
     let getUserIdChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.superwallkit_flutter.PSuperwallHostApi.getUserId\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {

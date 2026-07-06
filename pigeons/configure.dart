@@ -1447,10 +1447,6 @@ abstract class PSuperwallHostApi {
   String? getLocaleIdentifier();
   void setLocaleIdentifier(String? localeIdentifier);
 
-  // Storefront methods
-  @async
-  String? getStoreFrontCountryCode();
-
   // User identity methods
   String getUserId();
   bool getIsLoggedIn();

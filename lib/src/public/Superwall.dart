@@ -378,15 +378,6 @@ class Superwall {
     await hostApi.setLocaleIdentifier(localeIdentifier);
   }
 
-  /// The country code of the user's store account (e.g. the Play Store account
-  /// on Android). Returns `null` until it has been loaded, if the store is
-  /// unavailable, or on platforms that don't provide it.
-  ///
-  /// Note: Currently populated on Android only. Returns `null` on iOS.
-  Future<String?> getStoreFrontCountryCode() async {
-    return await hostApi.getStoreFrontCountryCode();
-  }
-
   // Gets the current user's ID
   Future<String> getUserId() async {
     return await hostApi.getUserId();

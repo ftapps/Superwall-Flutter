@@ -4439,7 +4439,6 @@ interface PSuperwallHostApi {
   fun consume(purchaseToken: String, callback: (Result<String>) -> Unit)
   fun getLocaleIdentifier(): String?
   fun setLocaleIdentifier(localeIdentifier: String?)
-  fun getStoreFrontCountryCode(callback: (Result<String?>) -> Unit)
   fun getUserId(): String
   fun getIsLoggedIn(): Boolean
   fun getIsInitialized(): Boolean
@@ -4733,24 +4732,6 @@ interface PSuperwallHostApi {
               SuperwallHostGeneratedPigeonUtils.wrapError(exception)
             }
             reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.superwallkit_flutter.PSuperwallHostApi.getStoreFrontCountryCode$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            api.getStoreFrontCountryCode{ result: Result<String?> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(SuperwallHostGeneratedPigeonUtils.wrapError(error))
-              } else {
-                val data = result.getOrNull()
-                reply.reply(SuperwallHostGeneratedPigeonUtils.wrapResult(data))
-              }
-            }
           }
         } else {
           channel.setMessageHandler(null)

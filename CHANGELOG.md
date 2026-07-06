@@ -8,7 +8,6 @@ The changelog for `Superwall`. Also see the [releases](https://github.com/superw
 - Adds `SuperwallOptions.eventTrackingBehavior` to control which events are sent to Superwall (`all` / `superwallOnly` / `none`). Deprecates `SuperwallOptions.isExternalDataCollectionEnabled` in favor of it.
 - Adds `singularDeviceId` integration attribute.
 - Adds `PaywallOptions.loadingColor` to theme the loading spinner (Android).
-- Adds `Superwall.getStoreFrontCountryCode()` accessor (Android).
 
 ## 2.4.13
 
