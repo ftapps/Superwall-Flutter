@@ -4,19 +4,32 @@ Fork de [`superwall/Superwall-Flutter`](https://github.com/superwall/Superwall-F
 mantido para o app **Vade Mecum**.
 
 O plugin oficial no pub.dev fixa versões do SDK nativo que ficam meses atrás das
-releases nativas de iOS e Android. Este fork existe só para adiantar esse pino —
-e, num segundo momento, para adicionar suporte a Swift Package Manager.
+releases nativas de iOS e Android, e não suporta Swift Package Manager — algo que
+o Flutter avisa a cada build e promete transformar em erro.
 
 Base: tag `2.4.12` (commit `e21ef56`).
 
 ## O que mudou em relação ao upstream
+
+**1. Pinos do SDK nativo**
 
 | Arquivo | Upstream 2.4.12 | Aqui |
 |---|---|---|
 | `ios/superwallkit_flutter.podspec` | `SuperwallKit 4.14.2` | `SuperwallKit 4.16.1` |
 | `android/build.gradle` | `superwall-android:2.7.11` | `superwall-android:2.7.24` |
 
-Nenhuma linha de código Swift, Kotlin ou Dart foi tocada. São dois pinos de versão.
+**2. Suporte a Swift Package Manager**
+
+Os fontes saíram de `ios/Classes/` para
+`ios/superwallkit_flutter/Sources/superwallkit_flutter/`, com um `Package.swift`
+ao lado. O CocoaPods continua funcionando em paralelo — o `source_files` do
+podspec aponta para o novo caminho.
+
+Nenhuma linha de código Swift, Kotlin ou Dart foi alterada: os arquivos só
+mudaram de lugar (o git registra como rename puro).
+
+⚠️ **O pino do SuperwallKit agora aparece em dois lugares** — `Package.swift` e
+`superwallkit_flutter.podspec`. Suba os dois juntos, sempre.
 
 ## Por que 2.7.24 e não 2.8.x no Android
 
@@ -54,6 +67,20 @@ dependency_overrides:
 
 Para builds de release, troque `ref` pelo SHA do commit — assim o build fica
 reprodutível e não segue a ponta do branch sem querer.
+
+O app ainda consome pelo **CocoaPods**: o `enable-swift-package-manager` do
+`vade_mecum/pubspec.yaml` segue em `false`. Ligar a flag lá migra o projeto
+inteiro (Firebase, OneSignal, GoogleMobileAds…) de uma vez, e isso é uma
+empreitada à parte. O suporte a SPM daqui fica pronto, esperando.
+
+Para exercitar o caminho SPM sem mexer no app, use um app descartável:
+
+```sh
+flutter create --platforms=ios spm_probe && cd spm_probe
+# no pubspec: dependência path para este fork + flutter.config.enable-swift-package-manager: true
+# no Runner.xcodeproj: IPHONEOS_DEPLOYMENT_TARGET >= 14.0
+flutter build ios --debug --no-codesign
+```
 
 ## Como rebasear numa versão nova do upstream
 
