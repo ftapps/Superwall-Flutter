@@ -33,19 +33,45 @@ mudaram de lugar (o git registra como rename puro).
 
 ## Por que 2.7.24 e não 2.8.x no Android
 
-O Superwall-Android **2.8.0 quebra o bridge deste plugin**:
+**O motivo é a Google Play Billing, não o bridge.**
 
-- `PurchaseController.purchase(activity, productDetails: ProductDetails, basePlanId, offerId)`
-  foi removido em favor de `purchase(activity, product: StoreProduct, basePlanId, offerId)`.
-  O bridge implementa a assinatura antiga em
-  `android/src/main/kotlin/com/superwall/superwallkit_flutter/PurchaseControllerHost.kt:24`.
-- A Google Play Billing Library saltou de 8.0.0 para 9.1.0, enquanto o
-  `android/build.gradle` deste plugin ainda declara `billing:8.0.0`.
-- O `minSdk` do SDK subiu de 21 para 23 (irrelevante para o Vade Mecum, que está em 26).
+Uma versão anterior deste arquivo dizia que o 2.8.0 quebrava o bridge, porque o
+`PurchaseController.purchase(activity, productDetails, ...)` teria sido removido.
+Isso estava errado — foi leitura das release notes, não do código. Na interface
+real da 2.8.1 o método antigo continua lá, apenas `@Deprecated` e com
+implementação padrão, e o novo overload que recebe `StoreProduct` tem um default
+que roteia produtos do Google Play para o antigo, com este comentário no próprio
+SDK: *"so existing implementations keep working"*.
+
+Verificado empiricamente em 20/08/2026: apontando o plugin para a 2.8.1 e rodando
+`:superwallkit_flutter:compileDebugKotlin --rerun-tasks`, o resultado é
+`BUILD SUCCESSFUL`. Sai apenas um aviso em `PurchaseControllerHost.kt:24`
+("overrides a deprecated member"), sem erro.
+
+O impedimento real é de dependência:
+
+| | Play Billing exigida |
+|---|---|
+| `superwall-android:2.8.1` | **9.1.0** |
+| `superwall-android:2.7.24` | 8.0.0 |
+| `revenuecat:purchases:10.17.0` (última em 20/08/2026) | **8.3.0** |
+
+Só pode existir uma Play Billing no app, e os dois SDKs pedem majors diferentes.
+Forçar 9.1.0 faz o RevenueCat, compilado contra a 8.3.0, rodar sobre uma versão
+que removeu APIs; forçar 8.3.0 faz o mesmo com o Superwall na direção oposta.
+Qualquer das duas é aposta no caminho de pagamento.
+
+O `minSdk` do SDK subiu de 21 para 23 no 2.8.0 — irrelevante para o Vade Mecum,
+que está em 26.
 
 A linha 2.7.x recebeu backports até o 2.7.24, de 11/08/2026 — mesmo dia do 2.8.1.
-Em 20/08/2026 o 2.7.24 seguia sendo o topo da linha 2.7. Enquanto o upstream
-não adaptar o bridge para a nova assinatura, **2.7.24 é o teto seguro**.
+Em 20/08/2026 o 2.7.24 seguia sendo o topo da linha 2.7.
+
+**O gatilho para reavaliar não é o Superwall: é o RevenueCat publicar suporte à
+Play Billing 9.** Quando publicar, a migração é pequena — subir o pino daqui,
+subir o `purchases_flutter` e trocar o `force` da Billing no app. Sem bridge novo.
+Não há pressa: o prazo do Google é Billing 8+ desde 31/08/2026, e o app está em
+8.3.0.
 
 No iOS não há quebra alguma entre 4.14.2 e 4.16.3. A única mudança de API é a
 deprecação de `SuperwallOptions.isExternalDataCollectionEnabled` (usada em
@@ -95,10 +121,20 @@ Os commits deste fork tocam duas linhas e um arquivo novo (este aqui), então o
 rebase tende a ser limpo. Se a nova tag já pinar versões nativas iguais ou mais
 novas do que as daqui, **descarte o commit de bump** — ele deixou de ser necessário.
 
-Antes de subir os pinos de novo, confira as release notes dos dois SDKs nativos
-procurando mudanças em `PurchaseController`, `PaywallPresentationHandler`,
-`subscriptionStatus`, `Superwall.configure` e `ActivityProvider` — é onde o bridge
-encosta. Quebra nesses pontos aparece em tempo de compilação, não em runtime.
+Antes de subir os pinos de novo, olhe `PurchaseController`,
+`PaywallPresentationHandler`, `subscriptionStatus`, `Superwall.configure` e
+`ActivityProvider` — é onde o bridge encosta.
+
+**Não confie nas release notes para isso.** As do 2.8.0 anunciavam a remoção de
+um método que na verdade só foi deprecado, e essa leitura errada travou o fork
+numa versão por mais de uma semana sem necessidade. Leia a interface no
+repositório do SDK, e confirme compilando: um `:superwallkit_flutter:compileDebugKotlin
+--rerun-tasks` com o pino novo responde em segundos. Quebra nesses pontos aparece
+em tempo de compilação, não em runtime — então o compilador é a fonte barata e
+definitiva.
+
+Confira também a Play Billing que o novo pino exige, no POM do Maven Central, e
+compare com a que o RevenueCat declara. É aí que mora o impedimento real.
 
 ## Quando abandonar este fork
 
