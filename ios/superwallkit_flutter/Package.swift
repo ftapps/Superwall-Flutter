@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
         // Kept in lockstep with the `SuperwallKit` pin in superwallkit_flutter.podspec.
-        .package(url: "https://github.com/superwall/Superwall-iOS.git", exact: "4.16.1"),
+        .package(url: "https://github.com/superwall/Superwall-iOS.git", exact: "4.16.3"),
     ],
     targets: [
         .target(

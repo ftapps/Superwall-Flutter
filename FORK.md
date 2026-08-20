@@ -15,7 +15,7 @@ Base: tag `2.4.12` (commit `e21ef56`).
 
 | Arquivo | Upstream 2.4.12 | Aqui |
 |---|---|---|
-| `ios/superwallkit_flutter.podspec` | `SuperwallKit 4.14.2` | `SuperwallKit 4.16.1` |
+| `ios/superwallkit_flutter.podspec` | `SuperwallKit 4.14.2` | `SuperwallKit 4.16.3` |
 | `android/build.gradle` | `superwall-android:2.7.11` | `superwall-android:2.7.24` |
 
 **2. Suporte a Swift Package Manager**
@@ -43,13 +43,13 @@ O Superwall-Android **2.8.0 quebra o bridge deste plugin**:
   `android/build.gradle` deste plugin ainda declara `billing:8.0.0`.
 - O `minSdk` do SDK subiu de 21 para 23 (irrelevante para o Vade Mecum, que está em 26).
 
-A linha 2.7.x segue recebendo backports — o 2.7.24 saiu em 11/08/2026, no mesmo dia
-do 2.8.1. Enquanto o upstream não adaptar o bridge para a nova assinatura, **2.7.24
-é o teto seguro**.
+A linha 2.7.x recebeu backports até o 2.7.24, de 11/08/2026 — mesmo dia do 2.8.1.
+Em 20/08/2026 o 2.7.24 seguia sendo o topo da linha 2.7. Enquanto o upstream
+não adaptar o bridge para a nova assinatura, **2.7.24 é o teto seguro**.
 
-No iOS não há quebra alguma entre 4.14.2 e 4.16.1. A única mudança de API é a
+No iOS não há quebra alguma entre 4.14.2 e 4.16.3. A única mudança de API é a
 deprecação de `SuperwallOptions.isExternalDataCollectionEnabled` (usada em
-`ios/Classes/Mappers/OptionsMapper.swift:76`), que gera aviso de compilação e
+`ios/superwallkit_flutter/Sources/superwallkit_flutter/Mappers/OptionsMapper.swift:76`), que gera aviso de compilação e
 continua funcionando — o 4.16.0 mapeia o valor antigo para o novo
 `EventTrackingBehavior`.
 
@@ -65,13 +65,14 @@ dependency_overrides:
       ref: ftapps/vade-mecum
 ```
 
-Para builds de release, troque `ref` pelo SHA do commit — assim o build fica
-reprodutível e não segue a ponta do branch sem querer.
+O `ref` é um branch, mas o build segue reprodutível: o `pubspec.lock` do app
+grava o `resolved-ref` (o SHA exato). Mudar de commit exige um
+`flutter pub upgrade superwallkit_flutter` explícito.
 
-O app ainda consome pelo **CocoaPods**: o `enable-swift-package-manager` do
-`vade_mecum/pubspec.yaml` segue em `false`. Ligar a flag lá migra o projeto
-inteiro (Firebase, OneSignal, GoogleMobileAds…) de uma vez, e isso é uma
-empreitada à parte. O suporte a SPM daqui fica pronto, esperando.
+Desde 12/08/2026 o app consome este plugin pelo **Swift Package Manager** — o
+`enable-swift-package-manager` está ligado e o CocoaPods foi removido do iOS e
+do macOS. Ou seja, na prática quem vale é o `Package.swift`; o podspec fica
+para quem ainda usar pods.
 
 Para exercitar o caminho SPM sem mexer no app, use um app descartável:
 
