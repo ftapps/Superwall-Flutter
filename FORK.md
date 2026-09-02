@@ -1,11 +1,34 @@
-# Fork FT Apps — por que ele existe
+# Fork FT Apps — APOSENTADO
 
-Fork de [`superwall/Superwall-Flutter`](https://github.com/superwall/Superwall-Flutter)
-mantido para o app **Vade Mecum**.
+> ## ⚠️ Este fork não é mais usado
+>
+> Em **02/09/2026** o app Vade Mecum voltou ao plugin oficial do pub.dev. A
+> versão **2.5.0** do `superwallkit_flutter` resolveu os dois motivos que
+> justificavam este fork, e chegou exatamente nos mesmos pinos que ele tinha:
+>
+> | | este fork | oficial 2.5.0 |
+> |---|---|---|
+> | SuperwallKit (iOS) | 4.16.3 | 4.16.3 |
+> | superwall-android | 2.7.24 | 2.7.24 |
+> | suporte a Swift Package Manager | sim | sim |
+>
+> O `dependency_overrides` foi removido do app e o repositório foi arquivado.
+> **Não use o que está abaixo como retrato do estado atual** — o conteúdo fica
+> só como registro do que foi feito e por quê.
+>
+> Se um dia o oficial voltar a atrasar, o caminho está documentado aqui: dá para
+> desarquivar, rebasear na tag nova e repetir. Mas comece verificando se o
+> problema ainda existe: entre 12/08 e 02/09 este fork esteve à frente por três
+> semanas, e depois o upstream alcançou.
 
-O plugin oficial no pub.dev fixa versões do SDK nativo que ficam meses atrás das
-releases nativas de iOS e Android, e não suporta Swift Package Manager — algo que
-o Flutter avisa a cada build e promete transformar em erro.
+---
+
+Fork de [`superwall/Superwall-Flutter`](https://github.com/superwall/Superwall-Flutter),
+mantido para o app **Vade Mecum** entre 12/08/2026 e 02/09/2026.
+
+Na época, o plugin oficial no pub.dev fixava versões do SDK nativo meses atrás
+das releases nativas de iOS e Android, e não suportava Swift Package Manager —
+algo que o Flutter avisava a cada build e prometia transformar em erro.
 
 Base: tag `2.4.12` (commit `e21ef56`).
 
@@ -136,8 +159,18 @@ definitiva.
 Confira também a Play Billing que o novo pino exige, no POM do Maven Central, e
 compare com a que o RevenueCat declara. É aí que mora o impedimento real.
 
-## Quando abandonar este fork
+## Quando abandonar este fork — feito
 
-Assim que o upstream publicar uma versão que já traga pinos nativos recentes **e**
-suporte a Swift Package Manager, apague o `dependency_overrides` do app e volte
-para o pub.dev. Este fork é ponte, não destino.
+O critério era: assim que o upstream publicar uma versão com pinos nativos
+recentes **e** suporte a Swift Package Manager, apagar o `dependency_overrides`
+do app e voltar para o pub.dev.
+
+Foi o que aconteceu. A **2.5.0**, publicada no fim de agosto de 2026, atendeu aos
+dois critérios de uma vez, e em **02/09/2026** o app voltou ao pacote oficial. O
+fork durou três semanas e cumpriu o papel de ponte.
+
+Fica a lição que custou mais caro no caminho: **o motivo de um fork envelhece
+rápido**. Este ficou uma semana travado numa versão do Android por uma leitura
+errada de release notes — o método que elas anunciavam como removido só estava
+deprecado. Antes de manter um fork vivo por causa de uma incompatibilidade, releia
+o código do SDK e confirme compilando.
